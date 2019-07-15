@@ -30,13 +30,23 @@ Spic = np.nanpercentile(data_in['Temperature'], 99.5)  # existence de la VC
 Sdeb = np.nanpercentile(data_in['Temperature'], 97.5) # identidie le debut et la fin de la VC (duree >= 3 jours consecutifs)
 Sint = np.nanpercentile(data_in['Temperature'], 95.0) # interrompt l'episode de VC des lors que la temperature 
 
+Spic = 27
+Sint = 23.2660
+Sdeb = 24.5
+
 # Detection des vagues de chaleur et estimation de la severite
 
 myList = []
 
-for y in range(yearmin, yearmax+1):
+for y in range(yearmin, yearmax+1): 
+    # on extrait la période entre le 1er mai et le 1er septembre
     signal = data_in[str(y) + '-05': str(y) + '-09'] 
-    signal['rollingmean3']=  signal['Temperature'].rolling(window=3).mean()    # calcul de la moyenne mobile sur 3 jours      
+    # si le signal présente des valeurs manquantes on les remplace par la moyenne mobile du signal 
+    signal['rollmean3'] = signal['Temperature'].rolling(3,center=False,min_periods=1).mean()  
+    signal['Temperature'] = signal['Temperature'].fillna(signal['rollmean3'])
+     
+    signal['rollingmean3']=  signal['Temperature'].rolling(window=3).mean()    # calcul de la moyenne mobile sur 3 jours 
+     
         # 1 Détection des seuils  Spic, Sint et Sdeb du signal entrant    
     signal['Sig_Spic'] = signal['rollingmean3'][signal['rollingmean3'] >= Spic]
     signal['Sig_Sint'] = signal['rollingmean3'][signal['rollingmean3'] >= Sint]

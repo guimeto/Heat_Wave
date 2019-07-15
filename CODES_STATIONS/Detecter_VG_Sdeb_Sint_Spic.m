@@ -15,7 +15,6 @@ clear all;
 
 %% Chemins à initialiser
 
-% entree = '/BIG1/corale/stations_traitees_v2015/DORVAL/tasmoy/'; %pour calcul des percentiles
 entree = './Input/'; %pour calcul des percentiles
 
 
@@ -51,7 +50,7 @@ Sint = prctile(signaltot,95.0);
 
 %% Détecter les vagues de chaleur et estimer la sévérité
 for iy = 1:ny    % boucle sur les annees (1:ny)
-
+    iy = 139
     curr_year = num2str(time(iy));
     signal = Tmoy(iy,:)';
     s = Tmoy(iy,:)';
@@ -77,6 +76,7 @@ for iy = 1:ny    % boucle sur les annees (1:ny)
             signal(j) = (signal(j-1) + signal(j) + signal(j+1))/3;              
         end
     end
+
 
     while(dtemp < dtemp_max)    
     signal_bis = signal(dtemp:dtemp_max);
